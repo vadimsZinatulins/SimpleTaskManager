@@ -1,4 +1,4 @@
-# Task Manager
+# Simple Task Manager
 
 Simple Task Manager library that manages asynchronous tasks which may also have some dependecies between them.
 
@@ -9,12 +9,12 @@ Simple Task Manager library that manages asynchronous tasks which may also have 
 Before runing any async task it is required it `initialize()` the `Scheduler` singleton first and `terminate()` at the end like so:
 
 ```cpp
-#include <TaskManager/Scheduler.h>
+#include <SimpleTaskManager/Scheduler.h>
 
 int main(int argc, char *argv[]) {
-    TaskManager::Scheduler::getInstance().initialize();
+    stm::Scheduler::getInstance().initialize();
     // ...
-    TaskManager::Scheduler::getInstance().terminate();
+    stm::Scheduler::getInstance().terminate();
 
     return 0;
 }
@@ -25,21 +25,21 @@ int main(int argc, char *argv[]) {
 To create a task you must use `make_task(lambda)` where you provide a lambda that will run asynchronously:
 
 ```cpp
-#include <TaskManager/Scheduler.h>
-#include <TaskManager/make_task.h>
+#include <SimpleTaskManager/Scheduler.h>
+#include <SimpleTaskManager/make_task.h>
 #include <iostream>
 
 int main(int argc, char *argv[]) {
-    TaskManager::Scheduler::getInstance().initialize();
+    stm::Scheduler::getInstance().initialize();
 
     // Create async task that will return 4
-    auto asyncTask { TaskManager::make_task([] { return 4; }); };
+    auto asyncTask { stm::make_task([] { return 4; }); };
 
     // Call result() to obtain the result of a task. This method will
     // block the execution until the task is finished
     int result = asyncTask->result();
 
-    TaskManager::Scheduler::getInstance().terminate();
+    stm::Scheduler::getInstance().terminate();
 
     return 0;
 }
@@ -54,16 +54,16 @@ It is not possible to have a task with return type of `void`. Unfortunately ever
 The following example shows how to use advantage of task dependency. For this you must use `make_task(lambda, dependencies)`:
 
 ```cpp
-#include <TaskManager/Scheduler.h>
-#include <TaskManager/TaskJoiner.h>
-#include <TaskManager/make_task.h>
+#include <SimpleTaskManager/Scheduler.h>
+#include <SimpleTaskManager/TaskJoiner.h>
+#include <SimpleTaskManager/make_task.h>
 #include <iostream>
 #include <string>
 #include <unordered_map>
 #include <utility>
 #include <vector>
 
-using namespace TaskManager;
+using namespace stm;
 
 int main(int argc, char *argv[]) {
     // Fake data to work with
@@ -133,11 +133,11 @@ Once again make sure that none of your tasks have a return type of void.
 You can return a task from you tasks. By doing so, you task will get executed asynchronously and will be unpacked like so:
 
 ```cpp
-#include <TaskManager/Scheduler.h>
-#include <TaskManager/make_task.h>
+#include <SimpleTaskManager/Scheduler.h>
+#include <SimpleTaskManager/make_task.h>
 #include <iostream>
 
-using namespace TaskManager;
+using namespace stm;
 
 int main(int argc, char *argv[]) {
     Scheduler::getInstance().initialize();
@@ -158,7 +158,7 @@ int main(int argc, char *argv[]) {
 }
 ```
 
-## Build Task Manager
+## Build Simple Task Manager
 
 To build this project make sure you're using C++ 20 and have CMake installed.
 
@@ -170,14 +170,14 @@ cmake --build build
 sudo cmake --install build
 ```
 
-## Include Task Manager
+## Include Simple Task Manager
 
-To include Task Manager you can use the following inside your `CMakeLists.txt`:
+To include Simple Task Manager you can use the following inside your `CMakeLists.txt`:
 
 ```cmake
-find_package(TaskManager)
+find_package(SimpleTaskManager)
 
-target_link_libraries(MyTarget TM::TaskManager)
+target_link_libraries(MyTarget STM::SimpleTaskManager)
 ```
 
 # Credits
