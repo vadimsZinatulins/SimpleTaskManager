@@ -1,0 +1,6 @@
+@PACKAGE_INIT@
+
+set_and_check(TASK_MANAGER_CMAKE_DIR "@PACKAGE_LIB_CMAKE_DIR@")
+include("${TASK_MANAGER_CMAKE_DIR}/TaskManagerTarget.cmake")
+
+check_required_components(TaskManager)
