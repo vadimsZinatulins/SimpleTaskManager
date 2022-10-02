@@ -53,7 +53,7 @@ It is not possible to have a task with return type of `void`. Unfortunately ever
 
 The following example shows how to use advantage of task dependency. For this you must use `make_task(lambda, dependencies)`:
 
-```
+```cpp
 #include <TaskManager/Scheduler.h>
 #include <TaskManager/TaskJoiner.h>
 #include <TaskManager/make_task.h>
