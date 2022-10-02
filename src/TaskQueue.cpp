@@ -2,7 +2,7 @@
 #include <memory>
 #include <mutex>
 
-namespace TaskManager {
+namespace stm {
 
 void TaskQueue::push(std::shared_ptr<ITask> task) {
 	auto lock { std::unique_lock(m_mutex) };

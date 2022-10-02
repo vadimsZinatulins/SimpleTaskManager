@@ -1,0 +1,6 @@
+@PACKAGE_INIT@
+
+set_and_check(SIMPLE_TASK_MANAGER_CMAKE_DIR "@PACKAGE_LIB_CMAKE_DIR@")
+include("${SIMPLE_TASK_MANAGER_CMAKE_DIR}/SimpleTaskManagerTarget.cmake")
+
+check_required_components(SimpleTaskManager)

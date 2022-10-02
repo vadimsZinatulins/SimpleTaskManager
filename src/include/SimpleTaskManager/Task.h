@@ -10,7 +10,7 @@
 #include "TaskTraits.h"
 #include "Scheduler.h"
 
-namespace TaskManager {
+namespace stm {
 
 struct ITask {
 	ITask() = default;

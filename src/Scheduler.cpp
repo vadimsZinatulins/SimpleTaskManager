@@ -3,7 +3,7 @@
 
 #include <memory>
 
-namespace TaskManager {
+namespace stm {
 
 Scheduler &Scheduler::getInstance() {
 	static Scheduler instance;

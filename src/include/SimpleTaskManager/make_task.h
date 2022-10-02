@@ -6,7 +6,7 @@
 #include "TaskJoiner.h"
 #include "Task.h"
 
-namespace TaskManager {
+namespace stm {
 	
 template<typename Function_t, typename ...Args_t>
 auto make_task(Function_t function, Args_t ...args) {

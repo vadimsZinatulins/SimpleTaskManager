@@ -1,25 +1,25 @@
-add_library(TaskManager main.cpp TaskQueue.cpp Scheduler.cpp Holder.cpp)
+add_library(SimpleTaskManager TaskQueue.cpp Scheduler.cpp Holder.cpp)
 
-target_include_directories(TaskManager 
+target_include_directories(SimpleTaskManager 
 	PRIVATE 
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/TaskManager>
-		$<INSTALL_INTERFACE:include/TaskManager>
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/SimpleTaskManager>
+		$<INSTALL_INTERFACE:include/SimpleTaskManager>
 	INTERFACE
 		$<INSTALL_INTERFACE:include>
 )
 
 install(
-	TARGETS TaskManager EXPORT TaskManagerTarget
+	TARGETS SimpleTaskManager EXPORT SimpleTaskManagerTarget
 	ARCHIVE	
 )
 
 install(
-	EXPORT TaskManagerTarget
-	DESTINATION lib/TaskManager/cmake
-	NAMESPACE TM::	
+	EXPORT SimpleTaskManagerTarget
+	DESTINATION lib/SimpleTaskManager/cmake
+	NAMESPACE STM::	
 )
 
 install (
-	DIRECTORY include/TaskManager
+	DIRECTORY include/SimpleTaskManager
 	DESTINATION include	
 )

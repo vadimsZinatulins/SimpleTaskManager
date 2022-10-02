@@ -4,7 +4,7 @@
 #include <mutex>
 #include <vector>
 
-namespace TaskManager {
+namespace stm {
 
 class Holder {
 public:

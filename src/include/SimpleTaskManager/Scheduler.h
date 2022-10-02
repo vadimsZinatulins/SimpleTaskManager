@@ -6,7 +6,7 @@
 
 #include "TaskQueue.h"
 
-namespace TaskManager {
+namespace stm {
 
 struct Itask;
 

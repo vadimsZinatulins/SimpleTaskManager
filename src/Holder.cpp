@@ -1,6 +1,6 @@
 #include "Holder.h"
 
-namespace TaskManager {
+namespace stm {
 
 void Holder::attach(std::function<void()> action) {
 	auto lock { std::lock_guard(m_mutex) };

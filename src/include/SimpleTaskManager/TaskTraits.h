@@ -2,7 +2,7 @@
 
 #include <memory>
 
-namespace TaskManager {
+namespace stm {
 
 template<typename T>
 struct Task;
