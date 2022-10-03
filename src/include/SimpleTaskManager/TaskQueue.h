@@ -9,6 +9,9 @@ namespace stm {
 
 struct ITask;
 
+}
+
+namespace stm::internal {
 class TaskQueue {
 public:
 	TaskQueue() = default;

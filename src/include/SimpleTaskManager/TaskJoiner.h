@@ -4,7 +4,7 @@
 
 #include "Task.h"
 
-namespace stm {
+namespace stm::internal {
 
 template<typename T>
 using TaskPtr = std::shared_ptr<Task<T>>;

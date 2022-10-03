@@ -4,7 +4,7 @@
 #include <mutex>
 #include <vector>
 
-namespace stm {
+namespace stm::internal {
 
 class Holder {
 public:

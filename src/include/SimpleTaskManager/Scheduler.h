@@ -8,7 +8,7 @@
 
 namespace stm {
 
-struct Itask;
+struct ITask;
 
 class Scheduler {
 public:
@@ -19,7 +19,7 @@ public:
 
 	void schedule(std::shared_ptr<ITask> action);
 private:
-	TaskQueue m_queue;
+	internal::TaskQueue m_queue;
 	std::vector<std::thread> m_threads;
 };
 

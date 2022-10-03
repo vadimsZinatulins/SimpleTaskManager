@@ -1,6 +1,6 @@
 #include "Holder.h"
 
-namespace stm {
+namespace stm::internal {
 
 void Holder::attach(std::function<void()> action) {
 	auto lock { std::lock_guard(m_mutex) };

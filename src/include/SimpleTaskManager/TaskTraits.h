@@ -7,6 +7,10 @@ namespace stm {
 template<typename T>
 struct Task;
 
+}
+
+namespace stm::internal {
+
 template<typename T>
 struct TaskTraits {
 	static constexpr bool isTask = false;
