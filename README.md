@@ -1,3 +1,4 @@
+# Documentation a little bit outdated!
 # Simple Task Manager
 
 Simple Task Manager library that manages asynchronous tasks which may also have some dependecies between them.
