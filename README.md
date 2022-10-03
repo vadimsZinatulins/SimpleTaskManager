@@ -1,13 +1,12 @@
-# Documentation a little bit outdated!
 # Simple Task Manager
 
-Simple Task Manager library that manages asynchronous tasks which may also have some dependecies between them.
+This is a small library that manages tasks that run asynchronously. It also manages the dependecy between tasks as well as unpacking tasks (see examples bellow).
 
-## Usage
+# Usage
 
-### Initialization and shutdown
+## Initialization and shutdown
 
-Before runing any async task it is required it `initialize()` the `Scheduler` singleton first and `terminate()` at the end like so:
+Before runing any async task it is required it `initialize()` the `Scheduler` (*singleton* class) first and `terminate()` it at the end like so:
 
 ```cpp
 #include <SimpleTaskManager/Scheduler.h>
@@ -21,9 +20,34 @@ int main(int argc, char *argv[]) {
 }
 ```
 
-### Creating simple task
+## Hello World task
 
-To create a task you must use `make_task(lambda)` where you provide a lambda that will run asynchronously:
+The creation of tasks is done by calling `make_task(lambda)` like in the following example:
+
+```cpp
+#include <SimpleTaskManager/Scheduler.h>
+#include <SimpleTaskManager/make_task.h>
+#include <iostream>
+
+int main(int argc, char *argv[]) {
+    stm::Scheduler::getInstance().initialize();
+
+    // Create async task that will print "Hello World"
+    auto helloWorldTask { stm::make_task([] { std::cout << "Hello World!" << std::endl; }) };
+
+    // The result() blocks the rest of the execution until
+    // helloWorldTask task gets executed
+    helloWorldTask->result();
+
+    stm::Scheduler::getInstance().terminate();
+
+    return 0;
+}
+```
+
+## Task with return value
+
+Sometimes it is necessary to a task return a value. This library allows tasks to have a return type:
 
 ```cpp
 #include <SimpleTaskManager/Scheduler.h>
@@ -34,11 +58,14 @@ int main(int argc, char *argv[]) {
     stm::Scheduler::getInstance().initialize();
 
     // Create async task that will return 4
-    auto asyncTask { stm::make_task([] { return 4; }); };
+    auto getFour { stm::make_task([] { return 4; }) };
 
-    // Call result() to obtain the result of a task. This method will
-    // block the execution until the task is finished
-    int result = asyncTask->result();
+    // Create async task that will return 6
+    auto getSix { stm::make_task([] { return 6; }) };
+
+    // Calculate the sum of both tasks and print it
+    int sum { getFour->result() + getSix->result() };
+    std::cout << "Sum: " << sum << std::endl;
 
     stm::Scheduler::getInstance().terminate();
 
@@ -46,92 +73,75 @@ int main(int argc, char *argv[]) {
 }
 ```
 
-#### Important notes
+The return type of `result()` is based on the return type of the lambda that is passed to `make_task(lambda)`.
 
-It is not possible to have a task with return type of `void`. Unfortunately every async task must have a return type.
+## Task dependecy
 
-### Task dependecy
-
-The following example shows how to use advantage of task dependency. For this you must use `make_task(lambda, dependencies)`:
+It is possible for one task to depend on the result of the other task (or other tasks). For this it is necessary to specify which tasks the current task being created is dependent on when using `make_task(lambda, ...dependencies)` like so:
 
 ```cpp
 #include <SimpleTaskManager/Scheduler.h>
-#include <SimpleTaskManager/TaskJoiner.h>
 #include <SimpleTaskManager/make_task.h>
 #include <iostream>
-#include <string>
-#include <unordered_map>
-#include <utility>
-#include <vector>
-
-using namespace stm;
 
 int main(int argc, char *argv[]) {
-    // Fake data to work with
-    std::unordered_map<std::string, unsigned int> usernameToIdMap {
-        std::make_pair("Patty O’Furniture", 1),
-        std::make_pair("Liz Erd", 2),
-        std::make_pair("Rita Book", 3),
-        std::make_pair("Colin Sik", 4)
-    };
-    std::vector<unsigned int> salaries { 1200, 1500, 1350, 920 };
+    stm::Scheduler::getInstance().initialize();
 
-    // Initialize the scheduler
-    Scheduler::getInstance().initialize();
+    // Create async task that will return 4
+    auto getFour { stm::make_task([] { return 4; }) };
 
-    // Might represent retrieving username from the user
-    auto retrieveUsername { make_task([] { return std::string("Colin Sik"); }) };
+    // Create async task that will return 6
+    auto getSix { stm::make_task([] { return 6; }) };
 
-    // Might represent retrieving user id from a database
-    auto retrieveUserID {
-        make_task([&usernameToIdMap] (std::string username) {
-            auto pairPtr = usernameToIdMap.find(username);
-            if(pairPtr == usernameToIdMap.end()) {
-                return 0u;
-            }
+    // Create a task that will print the sum of both tasks
+    auto printSum { stm::make_task([] (int a, int b) { std::cout << "Sum: " << (a + b) << std::endl; }, getFour, getSix) };
 
-            return pairPtr->second;
-        }, retrieveUsername) 
-    };
-    
-    // Might represent retrieving user id from another database
-    auto retrieveUserSalary { 
-        make_task([&salaries] (unsigned int id) {
-            if(id == 0) {
-                return 0u;
-            }
-    
-            return salaries[id - 1];
-        }, retrieveUserID)
-    };
-    
-    // Display data to the user
-    auto printUserSalary {
-        make_task([] (std::string username, unsigned int salary) {
-            std::cout << "User: " << username << std::endl;
-            std::cout << "Salary: " << salary << std::endl;
+    // Make sure that the result gets printed before the application gets closed
+    printSum->result();
 
-            return 0;
-        }, retrieveUsername, retrieveUserSalary)
-    };  
-
-    // Wait until the data is presented to the user
-    printUserSalary->result();
-        
-    // Terminate the scheduler
-    Scheduler::getInstance().terminate();
+    stm::Scheduler::getInstance().terminate();
 
     return 0;
 }
 ```
 
-#### Important notes
+The types of the arguments for the lambda (for `printSum` task) must match the return type of the dependencies except for those with `void` return type which is discussed bellow.
 
-Once again make sure that none of your tasks have a return type of void.
+## Pseudo task order execution
 
-### Task unpack
+It is not completly possible to specify the order for tasks execution. However it is possible to use the *Task dependency* to specify that one task must only run after the execution of another task like so:
 
-You can return a task from you tasks. By doing so, you task will get executed asynchronously and will be unpacked like so:
+```cpp
+#include <SimpleTaskManager/Scheduler.h>
+#include <SimpleTaskManager/make_task.h>
+#include <iostream>
+
+int main(int argc, char *argv[]) {
+    stm::Scheduler::getInstance().initialize();
+
+    // Create async task that will print "Hello"
+    auto printHello { stm::make_task([] { std::cout << "Hello" << std::endl; }) };
+    
+    // Create async task that will return a string
+    auto getName { stm::make_task([] { return std::string("Vadims") }) };
+
+    // Create a task that will print the value retrieve from getName task
+    auto printName {  stm::make_task([] (std::string name) { std::cout << name << std::endl; }, getName, printHello) };
+
+    // Make sure the message gets printed before the applications gets closed
+    printName->result();
+
+    stm::Scheduler::getInstance().terminate();
+
+    return 0;
+}
+```
+
+In normal circumstances nothing prevents the `getName` task and `printName` task to execute faster/before the `printHello` task which would lead to an undesired output. To make sure that `printName` executes after `printHello` the `printHello` is marked as a dependency for `printName`. Note that `printName` has two dependencies but only one argument, this is because `void` type tasks get excluded from argument list for the lambda.
+
+## Task unpack
+
+It is also possible for a task to return another task. In this case the return type of the task is defined by the deepest task:
 
 ```cpp
 #include <SimpleTaskManager/Scheduler.h>
@@ -143,15 +153,19 @@ using namespace stm;
 int main(int argc, char *argv[]) {
     Scheduler::getInstance().initialize();
 
+    // Create async task that returns another task
     auto task { 
         make_task([] { 
+            // The return type of this task will define the return type of the outer task
             return make_task([] { return 4; }); 
         })
     };  
 
-    int result = task->result();
+    // The return type of task is int
+    int result { task->result() };
 
-    std::cout << "Result: " << result << std::endl; // Will print 4
+    // Will print 4
+    std::cout << "Result: " << result << std::endl; 
 
     Scheduler::getInstance().terminate();
 
@@ -159,7 +173,7 @@ int main(int argc, char *argv[]) {
 }
 ```
 
-## Build Simple Task Manager
+# Build Simple Task Manager
 
 To build this project make sure you're using C++ 20 and have CMake installed.
 
