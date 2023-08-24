@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(SimpleTaskManager VERSION 1.0.0 LANGUAGE CXX)
+project(SimpleTaskManager 
+	VERSION 1.0.0
+	DESCRIPTION "A simple (multi-threading) task manager library"
+	HOMEPAGE_URL https://github.com/vadimsZinatulins/SimpleTaskManager
+	LANGUAGE CXX
+)
 
 # Global settings
 set(CMAKE_CXX_STANDARD 20)
