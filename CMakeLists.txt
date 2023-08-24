@@ -4,7 +4,7 @@ project(SimpleTaskManager
 	VERSION 1.0.0
 	DESCRIPTION "A simple (multi-threading) task manager library"
 	HOMEPAGE_URL https://github.com/vadimsZinatulins/SimpleTaskManager
-	LANGUAGE CXX
+	LANGUAGES CXX
 )
 
 # Global settings
