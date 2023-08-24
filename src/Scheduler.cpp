@@ -1,5 +1,5 @@
-#include "Scheduler.h"
-#include "Task.h"
+#include "SimpleTaskManager/Scheduler.h"
+#include "SimpleTaskManager/Task.h"
 
 #include <memory>
 
