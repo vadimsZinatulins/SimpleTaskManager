@@ -3,7 +3,7 @@ add_library(SimpleTaskManager STATIC TaskQueue.cpp Scheduler.cpp Holder.cpp)
 
 # Define include directories
 target_include_directories(SimpleTaskManager 
-	PRIVATE 
+	PUBLIC 
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
