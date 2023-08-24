@@ -1,5 +1,6 @@
 # The SimpleTaskManager static library
 add_library(SimpleTaskManager STATIC TaskQueue.cpp Scheduler.cpp Holder.cpp)
+add_library(STM::SimpleTaskManager ALIAS SimpleTaskManager)
 
 # Define include directories
 target_include_directories(SimpleTaskManager 
